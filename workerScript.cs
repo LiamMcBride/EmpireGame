@@ -24,63 +24,9 @@ public class workerScript : MonoBehaviour
 
         this.gameObject.transform.position = roundVector(this.gameObject.transform.position);
 
-        while (goalCoordinates.x != this.gameObject.transform.position.x)
-        {
-            if(goalCoordinates.x > this.gameObject.transform.position.x)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x + 1f,
-                    this.gameObject.transform.position.y,
-                    this.gameObject.transform.position.z
-                    );
-            }
-            else if (goalCoordinates.x < this.gameObject.transform.position.x)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x - 1f,
-                    this.gameObject.transform.position.y,
-                    this.gameObject.transform.position.z
-                    );
-            }
-        }
-        while (goalCoordinates.z != this.gameObject.transform.position.z)
-        {
-            if (goalCoordinates.z > this.gameObject.transform.position.z)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x,
-                    this.gameObject.transform.position.y,
-                    this.gameObject.transform.position.z + 1
-                    );
-            }
-            else if (goalCoordinates.z < this.gameObject.transform.position.z)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x,
-                    this.gameObject.transform.position.y,
-                    this.gameObject.transform.position.z - 1
-                    );
-            }
-        }
-        while(goalCoordinates.y != this.gameObject.transform.position.y)
-        {
-            if (goalCoordinates.y > this.gameObject.transform.position.y)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x,
-                    this.gameObject.transform.position.y + 1f,
-                    this.gameObject.transform.position.z
-                    );
-            }
-            else if (goalCoordinates.y < this.gameObject.transform.position.y)
-            {
-                this.gameObject.transform.position = new Vector3(
-                    this.gameObject.transform.position.x,
-                    this.gameObject.transform.position.y - 1f,
-                    this.gameObject.transform.position.z
-                    );
-            }
-        }
+        StartCoroutine(moveWorker());
+
+        
     }
 
     public Vector3 roundVector(Vector3 tor)
@@ -91,5 +37,52 @@ public class workerScript : MonoBehaviour
             Mathf.Round(tor.z)
             );
         return vec;
+    }
+
+    IEnumerator moveWorker()
+    {
+        float x = 0;
+        float y = 0;
+        float z = 0;
+        if (goalCoordinates.x > this.gameObject.transform.position.x)
+        {
+            x += .25f;
+        }
+        else if (goalCoordinates.x < this.gameObject.transform.position.x)
+        {
+            x -= .25f;
+        }
+
+        if (goalCoordinates.y > this.gameObject.transform.position.y)
+        {
+            y += .25f;
+        }
+        else if (goalCoordinates.y < this.gameObject.transform.position.y)
+        {
+            y -= .25f;
+        }
+
+        if (goalCoordinates.z > this.gameObject.transform.position.z)
+        {
+            z += .25f;
+        }
+        else if (goalCoordinates.z < this.gameObject.transform.position.z)
+        {
+            z -= .25f;
+        }
+
+        this.gameObject.transform.position = new Vector3(
+                this.gameObject.transform.position.x + x,
+                this.gameObject.transform.position.y + y,
+                this.gameObject.transform.position.z + z
+            );
+
+        yield return new WaitForSeconds(.1f);
+        
+        if(this.gameObject.transform.position != goalCoordinates)
+        {
+            StartCoroutine(moveWorker());
+        }
+        
     }
 }
